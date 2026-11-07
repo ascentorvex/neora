@@ -1,0 +1,72 @@
+/* Neora - Responsive tuning: desktop composer size, phones and tablets */
+/* ===== Optimization & comfort pass ===== */
+/* smaller, calmer composer on desktop */
+@media(min-width:1025px){
+.composer{width:clamp(500px,43vw,700px);min-height:clamp(112px,8.6vw,142px);padding:clamp(14px,1.4vw,20px);border-radius:clamp(20px,1.8vw,26px)}
+#q{font-size:max(16px,clamp(.9rem,1.15vw,1.15rem));min-height:2.6em}
+.chip,.chip.round{height:clamp(34px,2.6vw,40px)}.chip.round{width:clamp(34px,2.6vw,40px)}
+.chip.pill{font-size:clamp(.82rem,1vw,.95rem);padding:0 clamp(12px,1.1vw,18px)}
+.send{width:clamp(38px,2.9vw,44px);height:clamp(38px,2.9vw,44px)}
+.mic{width:clamp(34px,2.5vw,40px);height:clamp(34px,2.5vw,40px)}
+.ctl{padding-top:10px;gap:clamp(8px,.8vw,12px)}
+.try{width:min(100%,clamp(620px,54vw,860px));margin-top:.8rem;flex-wrap:nowrap}
+.try button{min-height:36px}
+}
+/* quick prompts stay visible on short laptop screens */
+@media(min-width:1025px) and (max-height:780px){.try{display:flex}.try button{font-size:.8rem;padding:.4em .9em;min-height:32px}.composer{min-height:104px}.trust{padding-top:.8rem;padding-bottom:.8rem}}
+/* phones and tablets: lighter compositing, comfier targets, no clipping on short screens */
+@media(max-width:1024px){
+.grain{display:none}
+.composer,.try button,.badge,.nav,.burger,.ovx{-webkit-backdrop-filter:none;backdrop-filter:none}
+.composer{background:rgba(12,12,12,.74)}
+}
+@media(max-width:680px){
+.composer{min-height:124px;padding:14px;border-radius:20px;margin-top:1.1rem}
+#q{min-height:2.4em}
+.hero{padding-top:clamp(1rem,calc(100svh - 580px),34vh)}
+.try button{min-height:42px}
+.bar{height:48px}.bar .send,.bar .mic{width:40px;height:40px}
+.brand{min-height:44px}
+}
+@media(min-width:681px) and (max-width:1024px){.composer{width:clamp(420px,70vw,680px)}.try button{min-height:40px}}
+
+/* ===== Nav additions: GitHub + Containments, mobile menu fit, containments dialog ===== */
+/* 5 nav items: tighten the pill a little on small laptops so it never crowds the brand or CTA */
+@media(min-width:1025px) and (max-width:1200px){
+.nav a{padding:0 12px;font-size:13.5px}
+.top .cta{padding:0 16px}
+}
+/* mobile menu: 5 links must fit short phones and landscape; list scrolls instead of clipping */
+.ov{background:radial-gradient(80% 50% at 50% 0%,rgba(255,255,255,.06),transparent 70%),rgba(6,6,6,.98);overflow:hidden;padding-top:calc(88px + env(safe-area-inset-top,0px));padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+.ov ul{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;gap:clamp(.55rem,2.2svh,1.2rem);padding-bottom:1rem}
+.ov li a{font-size:clamp(1.65rem,min(8vw,5.6svh),3.4rem);line-height:1.15;padding:.1em 0}
+.ov.open li:nth-child(5){transition-delay:.32s}
+.ovf{flex:none;padding-top:.6rem}
+.ovf .cta{height:clamp(46px,7svh,54px)}
+@media(max-height:520px){.ov{padding-top:calc(64px + env(safe-area-inset-top,0px))}.ov li a{font-size:1.5rem}.ovf i{margin-bottom:12px}}
+
+/* containments dialog */
+body.cm-open{overflow:hidden}
+.cm{position:fixed;inset:0;z-index:65;display:flex;align-items:center;justify-content:center;padding:max(20px,env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) max(20px,env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));background:rgba(0,0,0,.66);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);opacity:0;visibility:hidden;transition:opacity .3s var(--ease),visibility .3s}
+.cm.open{opacity:1;visibility:visible}
+.cmp{position:relative;width:min(100%,640px);max-height:min(100%,760px);display:flex;flex-direction:column;border-radius:28px;background:rgba(14,14,14,.96);border:1px solid rgba(255,255,255,.12);box-shadow:0 30px 90px rgba(0,0,0,.6);transform:translateY(14px) scale(.985);transition:transform .45s var(--ease)}
+.cm.open .cmp{transform:none}
+.cmb{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:clamp(24px,4vw,36px);padding-right:clamp(64px,8vw,76px);outline:0}
+.cmb:focus-visible{outline:2px solid #ffe776;outline-offset:-4px;border-radius:28px}
+.cmx{position:absolute;top:14px;right:14px;z-index:2;width:42px;height:42px;display:grid;place-items:center;border-radius:50%;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.06);cursor:pointer;transition:background .25s,border-color .25s}
+.cmx:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.18)}
+.cm h2{text-align:left;font-size:clamp(1.55rem,4.6vw,2.1rem);font-weight:500;letter-spacing:-.035em;line-height:1.12}
+.cml{margin:.6rem 0 0;color:#c9c9c9;font-size:1rem;line-height:1.5;max-width:34rem}
+.cmu{list-style:none;margin:1.5rem 0 0;padding:0;display:flex;flex-direction:column;gap:1.05rem}
+.cmu li{position:relative;padding-left:1.15rem;color:#a9a9a9;font-size:.95rem;line-height:1.5}
+.cmu li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.55)}
+.cmu b{display:block;color:#fff;font-weight:500;font-size:1rem;margin-bottom:.1em}
+.cmf{margin:1.6rem 0 0;padding-top:1.1rem;border-top:1px solid rgba(255,255,255,.1);color:#8d8d8d;font-size:.88rem;line-height:1.5}
+@media(max-width:680px){
+.cm{align-items:flex-end;padding:0}
+.cmp{width:100%;max-height:min(90svh,100%);border-radius:24px 24px 0 0;border-bottom:0;transform:translateY(40px)}
+.cmb{padding:24px 20px calc(28px + env(safe-area-inset-bottom,0px));padding-right:64px}
+.cmx{top:12px;right:12px}
+}
+@media(prefers-reduced-motion:reduce){.cm,.cmp{transition:opacity .01s,visibility .01s}.cmp{transform:none}}
+.lite .cm{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(0,0,0,.82)}

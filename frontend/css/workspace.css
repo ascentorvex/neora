@@ -1,0 +1,29 @@
+/* Neora - Workspace: side drawer and overlay hardening */
+/* ===== Menu & workspace hardening ===== */
+.wh{position:relative;z-index:4;flex:none}
+.wc{flex:none}
+.side{top:calc(70px + env(safe-area-inset-top,0px));padding:10px 14px 16px;border-radius:0 18px 18px 0;visibility:hidden;transition:transform .32s cubic-bezier(.22,1,.36,1),visibility 0s linear .32s;box-shadow:12px 0 40px rgba(0,0,0,.5)}
+.sb .side{visibility:visible;transition:transform .32s cubic-bezier(.22,1,.36,1),visibility 0s}
+.side button,.side small{flex:none}
+#rc{min-height:0;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#rc button{flex:none;min-height:36px}
+@supports (overflow:clip){.ws,.wmain{overflow:clip}}
+
+/* Tool output cards */
+.b .tlh{margin-top:.9em;font-size:.72em;letter-spacing:.08em;text-transform:uppercase;color:#8b8b8d}
+.b .tool{margin-top:.5em;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.04);overflow:hidden}
+.b .tool summary{padding:8px 12px;font-size:.8em;color:#cfcfd1;cursor:pointer;list-style:none;word-break:break-word}
+.b .tool summary::-webkit-details-marker{display:none}
+.b .tool .tk{display:inline-block;margin-right:.4em;padding:1px 7px;border-radius:6px;background:rgba(255,255,255,.1);font-size:.85em;color:#f2f2f2}
+.b .tool pre{margin:0;padding:8px 12px;border-top:1px solid rgba(255,255,255,.08);font:12px/1.45 ui-monospace,Menlo,Consolas,monospace;color:#bdbdc0;white-space:pre-wrap;word-break:break-word;max-height:180px;overflow:auto}
+
+.b .tool .sec{padding:4px 12px 8px;font-size:.72em;color:#8fd19e;word-break:break-word}
+.b .dl{display:inline-block;margin-top:.6em;padding:9px 14px;border:1px solid rgba(255,255,255,.18);border-radius:12px;background:rgba(255,255,255,.08);color:#f2f2f2;font:inherit;font-size:.85em;cursor:pointer;word-break:break-all}
+.b .dl:active{background:rgba(255,255,255,.16)}
+
+.b .vd{margin:.6em 0;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);border-left-width:5px;background:rgba(255,255,255,.05)}
+.b .vd[data-l=unsafe]{border-left-color:#ff5a5f}.b .vd[data-l=suspicious]{border-left-color:#f5b83d}.b .vd[data-l=clean]{border-left-color:#3ecf8e}.b .vd[data-l=incomplete]{border-left-color:#9aa0a6}.b .vd[data-l=static]{border-left-color:#4f9dff}.b .vd[data-l=partial]{border-left-color:#a78bfa}
+.b .vh{font-weight:600;font-size:.95em}.b .vs,.b .vr{font-size:.76em;opacity:.8;margin-top:3px;word-break:break-word}
+
+.b .stw{display:inline-flex;align-items:center;gap:10px}.b .stl{opacity:.85}
+.b .sd{margin-top:4px;font-size:.78em;opacity:.55;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.b .sd.mono{font-family:ui-monospace,Menlo,Consolas,monospace}

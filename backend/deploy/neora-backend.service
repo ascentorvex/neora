@@ -1,0 +1,14 @@
+[Unit]
+Description=Neora backend
+After=network-online.target docker.service
+Requires=docker.service
+
+[Service]
+WorkingDirectory=/opt/neora/backend
+ExecStart=/usr/bin/node --env-file=/opt/neora/backend/.env server.mjs
+Restart=always
+RestartSec=3
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

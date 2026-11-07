@@ -1,0 +1,100 @@
+#!/bin/bash
+# neora-wine-run: runs ONE Windows sample under Wine for a fixed observation window and prints evidence.
+# Runs INSIDE the container (no network, read-only root, non-root, caps dropped). Sample is at /work/$NEORA_SAMPLE.
+# Output = sections introduced by "@@NEORA:<nonce> NAME". The nonce is secret from the sample (unset before launch),
+# so the sample cannot forge sections by printing marker lines.
+NONCE="${NEORA_NONCE:-x}"; SAMPLE="${NEORA_SAMPLE:-}"; RUN_S="${NEORA_WINE_RUN_S:-30}"
+unset NEORA_NONCE NEORA_SAMPLE NEORA_WINE_RUN_S
+case "$RUN_S" in ''|*[!0-9]*) RUN_S=30;; esac
+[ "$RUN_S" -lt 3 ] && RUN_S=3
+[ "$RUN_S" -gt 600 ] && RUN_S=600
+
+sec()  { printf '@@NEORA:%s %s\n' "$NONCE" "$1"; }
+safe() { tr -cd '\11\12\40-\176' | cut -c1-300; }       # printable ASCII only, short lines
+
+export HOME=/tmp/home WINEPREFIX=/tmp/wp WINEDEBUG=fixme-all DISPLAY=:99
+export WINEDLLOVERRIDES="mscoree,mshtml,winemenubuilder.exe=d"
+OUT=/tmp/out
+mkdir -p "$HOME" "$WINEPREFIX" "$OUT" /tmp/.X11-unix
+
+fail() { sec FAIL; echo "$1" | safe; sec END; exit 0; }
+[ -n "$SAMPLE" ] && [ -f "/work/$SAMPLE" ] || fail "sample not found"
+
+# fresh prefix copy for every run (the pristine one in /opt/wine is never touched)
+cp -a --no-preserve=ownership /opt/wine/. "$WINEPREFIX"/ 2>"$OUT/cp.err" || fail "prefix copy failed: $(head -c 200 "$OUT/cp.err")"
+rm -f "$WINEPREFIX/dosdevices/z:"                        # hide the container filesystem from the sample
+mkdir -p "$WINEPREFIX/drive_c/sample"
+cp "/work/$SAMPLE" "$WINEPREFIX/drive_c/sample/$SAMPLE" || fail "sample copy failed"
+ulimit -f 102400 2>/dev/null   # from here on the sample (and Wine) cannot write any single file over ~100 MB
+
+# PE bitness from the header (Machine field): 0x014c = 32-bit x86, 0x8664 = 64-bit x64, 0xaa64 = ARM64
+pe_arch() {
+  local f="$1" off m
+  [ "$(head -c 2 "$f" 2>/dev/null)" = "MZ" ] || { echo notpe; return; }
+  off=$(od -An -tu4 -j60 -N4 "$f" 2>/dev/null | tr -d ' ')
+  [ -n "$off" ] && [ "$off" -lt 1048576 ] 2>/dev/null || { echo notpe; return; }
+  [ "$(od -An -c -j"$off" -N4 "$f" 2>/dev/null | tr -d ' ')" = 'PE\0\0' ] || { echo notpe; return; }
+  m=$(od -An -tx2 -j$((off+4)) -N2 "$f" 2>/dev/null | tr -d ' ')
+  case "$m" in 014c) echo x86;; 8664) echo x64;; aa64) echo arm64;; *) echo "other-$m";; esac
+}
+ARCH="$(pe_arch "/work/$SAMPLE")"
+
+cd "$WINEPREFIX/drive_c/sample" || fail "cd failed"   # avoids "could not open working directory" noise
+WV="$(wine --version 2>/dev/null | head -1 | tr ' ' '_')"
+Xvfb :99 -screen 0 1024x768x24 -nolisten tcp >/dev/null 2>&1 &
+sleep 1
+
+TRACE=0
+strace -f -o /dev/null true >/dev/null 2>&1 && TRACE=1   # ptrace may be blocked (e.g. gVisor); then run untraced
+
+if [ "$TRACE" = 1 ]; then
+  strace -f -qq -s 160 -e trace=execve,connect,bind,sendto -o "$OUT/trace.txt" \
+    wine "C:\\sample\\$SAMPLE" >"$OUT/stdout.txt" 2>"$OUT/stderr.txt" </dev/null &
+else
+  : >"$OUT/trace.txt"
+  wine "C:\\sample\\$SAMPLE" >"$OUT/stdout.txt" 2>"$OUT/stderr.txt" </dev/null &
+fi
+WPID=$!
+
+ENDED=window; i=0
+while [ "$i" -lt "$RUN_S" ]; do
+  if ! kill -0 "$WPID" 2>/dev/null; then ENDED=exited; break; fi
+  sleep 1; i=$((i+1))
+done
+if [ "$ENDED" = exited ]; then
+  # the launcher returned; give child processes the rest of the window
+  rem=$((RUN_S-i))
+  if [ "$rem" -gt 0 ]; then timeout "$rem" wineserver -w >/dev/null 2>&1; [ $? -eq 124 ] && ENDED=window; fi
+fi
+EXIT=""
+if [ "$ENDED" = window ]; then
+  wineserver -k >/dev/null 2>&1; sleep 1; kill "$WPID" 2>/dev/null
+  wait "$WPID" 2>/dev/null
+else
+  wait "$WPID" 2>/dev/null; EXIT=$?
+fi
+sleep 1
+
+printf '@@NEORA:%s META wine=%s exit=%s ended=%s run_s=%s trace=%s arch=%s\n' "$NONCE" "${WV:-unknown}" "$EXIT" "$ENDED" "$RUN_S" "$TRACE" "$ARCH"
+sec DIAG
+{
+  echo "host_arch=$(uname -m) pe_arch=$ARCH"
+  echo "wine_bin=$(command -v wine) wine64_bin=$(command -v wine64)"
+  echo "loader32=$([ -x /usr/lib/wine/wine ] && echo yes || echo NO) loader64=$([ -x /usr/lib/wine/wine64 ] && echo yes || echo NO)"
+  echo "syswow64_files=$(ls "$WINEPREFIX/drive_c/windows/syswow64" 2>/dev/null | wc -l) system32_files=$(ls "$WINEPREFIX/drive_c/windows/system32" 2>/dev/null | wc -l)"
+  [ "$ARCH" = x86 ] && [ "$ENDED" = exited ] && [ "$EXIT" != 0 ] && echo "NOTE: 32-bit sample exited early with a non-zero code; see STDERR"
+} | safe
+sec NET;   grep -anE '(connect|sendto|bind)\(' "$OUT/trace.txt" | grep -aE 'AF_INET6?' | head -80 | safe
+sec EXEC;  grep -anE 'execve\(.*\) += 0$' "$OUT/trace.txt" | head -120 | safe
+sec REG
+for f in system.reg user.reg userdef.reg; do
+  diff --unchanged-line-format= --old-line-format= --new-line-format='%L' \
+    <(grep -av '^#time\|^;;' "/opt/wine/$f") <(grep -av '^#time\|^;;' "$WINEPREFIX/$f") 2>/dev/null
+done | head -300 | safe
+sec FILES
+diff <(cd /opt/wine/drive_c && find . -type f | sort) <(cd "$WINEPREFIX/drive_c" && find . -type f | sort) 2>/dev/null \
+  | grep -a '^>' | grep -avF "> ./sample/$SAMPLE" | head -80 | safe
+sec STDOUT; tail -c 1500 "$OUT/stdout.txt" 2>/dev/null | safe
+sec STDERR; tail -c 1500 "$OUT/stderr.txt" 2>/dev/null | safe
+sec END
+exit 0

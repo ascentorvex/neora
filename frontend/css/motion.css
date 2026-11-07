@@ -1,0 +1,101 @@
+/* Neora - Motion: smoothness, button effects, performance / lite mode */
+/* ===== Smoothness pass ===== */
+a,button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.grain{mix-blend-mode:normal;opacity:.035}
+.wb{scroll-behavior:smooth;-webkit-overflow-scrolling:touch}
+#wm .m.in{animation:msgIn .5s cubic-bezier(.22,1,.36,1) both}
+#wm .b>div{animation:lineIn .45s cubic-bezier(.22,1,.36,1) both}
+@keyframes msgIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes lineIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.think{animation:none}
+.dots{display:inline-flex;gap:5px;align-items:center;height:1.4em}
+.dots i{width:6px;height:6px;border-radius:50%;background:#bdbdbd;animation:dot 1.1s ease-in-out infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes dot{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
+.pb:active,.wh button:active,.sg button:active,.side button:active{transform:scale(.94)}
+.pb,.wh button,.sg button,.side button{transition:background .18s,transform .18s}
+.sg button{animation:lineIn .6s cubic-bezier(.22,1,.36,1) both}
+.sg button:nth-child(2){animation-delay:.06s}.sg button:nth-child(3){animation-delay:.12s}.sg button:nth-child(4){animation-delay:.18s}
+.ws::before{content:"";position:absolute;inset:0;z-index:2;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .3s ease}
+.ws.sb::before{opacity:1}
+.how div.rv{opacity:0;transform:translateY(20px);transition:opacity .7s cubic-bezier(.16,1,.3,1) var(--d,0s),transform .7s cubic-bezier(.16,1,.3,1) var(--d,0s),background .25s}
+.how div.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.wb{scroll-behavior:auto}.how div.rv{opacity:1;transform:none}#wm .m.in,#wm .b>div,.sg button{animation:none}.dots i{animation:none;opacity:.7}}
+
+/* ===== Quality pass: buttons, motion, polish ===== */
+:root{--ease:cubic-bezier(.22,1,.36,1)}
+.send,.cta,.chip,.try button,.sg button,.pb,.mic,.wh button,.side button,.nav a{position:relative;overflow:hidden;transition:background .25s var(--ease),color .25s,transform .25s var(--ease),box-shadow .3s var(--ease),opacity .25s,filter .25s}
+.mic,.pb{border-radius:50%}
+.rip{position:absolute;border-radius:50%;pointer-events:none;background:rgba(255,255,255,.3);transform:scale(0);opacity:1;animation:rip .65s var(--ease) forwards;z-index:3}
+.cta .rip,.send .rip{background:rgba(0,0,0,.16)}
+@keyframes rip{to{transform:scale(1);opacity:0}}
+/* primary buttons */
+.cta:hover{transform:translateY(-1px)}.cta:active{transform:translateY(0) scale(.97)}
+.send:hover{transform:translateY(-1px) scale(1.05)}.send:active{transform:scale(.93)}
+.send .up{transition:transform .3s var(--ease)}
+.send:hover .up{transform:translateY(-2px)}
+.send .up.fly{animation:fly .6s var(--ease)}
+@keyframes fly{40%{transform:translateY(-150%);opacity:0}41%{transform:translateY(150%);opacity:0}100%{transform:none;opacity:1}}
+.send.idle{opacity:.5;filter:saturate(.6)}
+.send.idle:hover{opacity:.8}
+/* chips & suggestions */
+.chip:hover,.try button:hover,.sg button:hover{transform:translateY(-1px)}
+.chip:active,.try button:active,.sg button:active,.pb:active,.mic:active{transform:scale(.94)}
+.chip .ic{transition:transform .35s var(--ease),filter .3s}
+.chip.on{box-shadow:0 0 0 1px rgba(255,255,255,.35),0 0 20px rgba(255,255,255,.14)}
+.chip.on .ic{transform:scale(1.12) rotate(-8deg);filter:drop-shadow(0 0 5px rgba(255,255,255,.7))}
+.mic.rec{animation:recp 1.4s ease-in-out infinite}
+@keyframes recp{0%,100%{box-shadow:0 0 0 0 rgba(255,107,94,.45)}50%{box-shadow:0 0 0 10px rgba(255,107,94,0)}}
+/* headline + badge */
+h1 em{text-shadow:none;background:linear-gradient(100deg,#8a8a8a 0%,#8a8a8a 30%,#fff 50%,#8a8a8a 70%,#8a8a8a 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:shim 7s ease-in-out infinite;padding-bottom:.06em}
+@keyframes shim{0%{background-position:120% 0}60%,100%{background-position:-20% 0}}
+body.lock h1 em,body.menu-open h1 em{animation-play-state:paused}
+.badge{overflow:hidden}
+.badge::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.22) 50%,transparent 65%);transform:translateX(-120%);animation:shine 6s ease-in-out 2.5s infinite;pointer-events:none}
+@keyframes shine{0%{transform:translateX(-120%)}25%,100%{transform:translateX(120%)}}
+body.lock .badge::after{animation-play-state:paused}
+.trust span{transition:color .3s,transform .3s var(--ease)}
+.trust span:hover{color:#fff;transform:translateY(-2px)}
+/* chat polish */
+.m.u .b{background:linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,.09))}
+.av.a{box-shadow:0 0 16px rgba(255,255,255,.2)}
+.b .cf i{transform-origin:left;animation:fill 1.1s .25s var(--ease) both}
+@keyframes fill{from{transform:scaleX(0)}to{transform:none}}
+.wpill{transition:background .3s,box-shadow .3s var(--ease)}
+.wpill:focus-within{background:rgba(255,255,255,.1);box-shadow:0 0 0 1px rgba(255,255,255,.2),0 10px 40px rgba(0,0,0,.4)}
+.bar{transition:box-shadow .3s var(--ease)}
+.bar:focus-within{box-shadow:0 0 0 3px rgba(255,255,255,.25)}
+/* cards */
+.how div.rv.in:hover{transform:translateY(-4px);background:rgba(255,255,255,.075);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12),0 18px 40px rgba(0,0,0,.35);transition-delay:0s}
+/* menu overlay */
+.ov li{transform:translateY(22px)}
+.ov.open li:nth-child(4){transition-delay:.26s}
+.ovf{opacity:0;transform:translateY(18px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+.ov.open .ovf{opacity:1;transform:none;transition-delay:.28s}
+.ov{transition:opacity .4s var(--ease),visibility .4s}
+/* toast */
+.toast{transform:translateX(-50%) translateY(14px);transition:opacity .25s,transform .4s var(--ease);box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.toast.on{transform:translateX(-50%)}
+@media(prefers-reduced-motion:reduce){.rip,.badge::after{display:none}h1 em{animation:none;background-position:50% 0}.mic.rec{animation:none}}
+
+/* ===== Performance pass (same look, cheaper to render) ===== */
+@keyframes shim{0%{background-position:120% 0}22%,100%{background-position:-20% 0}}
+h1 em{animation-duration:9s}
+.msgs,#wm{contain:layout style}
+.wb{overscroll-behavior-y:contain}
+/* fewer live blur layers over the animated canvas on desktop */
+@media(min-width:1025px){
+.badge,.try button{-webkit-backdrop-filter:none;backdrop-filter:none}
+.badge{background:rgba(32,32,32,.55)}
+.try button{background:rgba(34,34,34,.55)}
+.nav{-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.composer{-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);background:rgba(12,12,12,.6)}
+}
+/* lite mode: low-core / low-memory / data-saver devices */
+.lite *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+.lite .grain,.lite .badge::after{display:none}
+.lite h1 em{animation:none;background-position:50% 0}
+.lite .composer{background:rgba(12,12,12,.82)}
+.lite .nav{background:rgba(30,30,30,.7)}
+.lite .ov{background:rgba(8,8,8,.94)}
+.lite .rip{animation-duration:.45s}

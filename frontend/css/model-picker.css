@@ -1,0 +1,49 @@
+/* Neora - Model picker dropdown */
+/* ===== Model picker ===== */
+.wmain{position:relative}
+.wh .model{max-width:calc(100% - 130px)}
+.wh .model .mn{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wh .model svg{flex:none;transition:transform .25s var(--ease)}
+.wh .model[aria-expanded=true] svg{transform:rotate(180deg)}
+.mdd{position:absolute;z-index:6;left:12px;top:calc(62px + env(safe-area-inset-top,0px));width:min(360px,calc(100% - 24px));max-height:calc(100% - 84px - env(safe-area-inset-top,0px));overflow-y:auto;overscroll-behavior:contain;background:#141414;border:1px solid var(--hair);border-radius:18px;padding:6px;box-shadow:0 18px 60px rgba(0,0,0,.65);opacity:0;visibility:hidden;transform:translateY(-8px) scale(.98);transform-origin:top left;transition:opacity .2s,transform .28s var(--ease),visibility 0s linear .28s;scrollbar-width:thin;scrollbar-color:#333 transparent}
+.mdd.open{opacity:1;visibility:visible;transform:none;transition:opacity .2s,transform .28s var(--ease),visibility 0s}
+.mdd small{display:block;color:#8b8b8d;font-size:.78rem;letter-spacing:.02em;padding:.55em .8em .3em}
+.mdd hr{border:0;border-top:1px solid var(--hair);margin:6px 4px}
+.mi{position:relative;overflow:hidden;display:grid;grid-template-columns:1fr auto;column-gap:10px;row-gap:2px;align-items:center;width:100%;text-align:left;background:none;border:0;color:#ececec;padding:.62em .8em;border-radius:12px;cursor:pointer;transition:background .18s}
+.mi:hover{background:rgba(255,255,255,.07)}
+.mi:focus-visible{outline:2px solid rgba(255,231,118,.65);outline-offset:-2px}
+.mi[aria-checked=true][data-id]{background:rgba(255,231,118,.09)}
+.mi[aria-disabled=true]{opacity:.5;cursor:not-allowed}
+.mi .mt{grid-column:1;display:flex;align-items:center;gap:8px;min-width:0}
+.mi b{font-weight:500;font-size:.98rem}
+.mi .tg{font-style:normal;font-size:.68rem;font-weight:500;line-height:1;padding:.32em .6em;border-radius:999px;background:var(--gs);color:#0c0c0c;white-space:nowrap}
+.mi .tg.dim{background:rgba(255,255,255,.12);color:#d0d0d0}
+.mi .md{grid-column:1;color:#9a9a9a;font-size:.82rem;line-height:1.3}
+.mi code{grid-column:1;font:500 .72rem/1.25 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:#6f6f6f;overflow-wrap:anywhere}
+.mi .ck{grid-column:2;grid-row:1/span 3;width:18px;height:18px;stroke:#ffd400;stroke-width:2.2;opacity:0;transition:opacity .18s}
+.mi[aria-checked=true] .ck{opacity:1}
+.mi .tgl{grid-column:2;grid-row:1/span 2;width:38px;height:22px;border-radius:999px;background:#333;position:relative;transition:background .25s}
+.mi .tgl::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .28s var(--ease)}
+.mi[aria-checked=true] .tgl{background:var(--gs)}
+.mi[aria-checked=true] .tgl::after{transform:translateX(16px);background:#0c0c0c}
+@media(prefers-reduced-motion:reduce){.mdd,.mdd.open{transition:none}}
+@media(max-width:480px){.wh .model .nb{display:none}}
+
+/* ===== Attached files: Claude / ChatGPT style file cards ===== */
+.att-tray{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.att-tray:empty{display:none}
+.wc .att-tray{padding:0 8px;margin-bottom:10px}
+.att{position:relative;display:flex;align-items:center;gap:10px;min-width:0;max-width:min(100%,230px);padding:6px 12px 6px 6px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:#eee;animation:attIn .22s ease both}
+.att-i{flex:none;width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,.1);color:#cfcfcf;display:grid;place-items:center;overflow:hidden}
+.att-i img{width:100%;height:100%;object-fit:cover;display:block}
+.att-x{display:flex;flex-direction:column;min-width:0;line-height:1.25;text-align:left}
+.att-n{font-size:.82rem;font-weight:500;color:#f2f2f2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.att-t{font-size:.68rem;letter-spacing:.06em;color:#9b9b9f}
+.att-rm{position:absolute;top:-7px;right:-7px;width:20px;height:20px;padding:0;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:#2c2c2e;color:#e8e8e8;display:grid;place-items:center;cursor:pointer;transition:background .15s,color .15s}
+.att-rm:hover{background:#3d3d40;color:#fff}
+.att-rm:active{transform:scale(.9)}
+.att-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:.55em}
+.att-row:last-child{margin-bottom:0}
+.b .att{background:rgba(255,255,255,.06);animation:none}
+@keyframes attIn{from{opacity:0;transform:translateY(4px) scale(.97)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.att{animation:none}}

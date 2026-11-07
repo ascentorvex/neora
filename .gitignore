@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+
+# Secrets and local environment files (keep only the *.example templates)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+*.crt
+secrets/
+nginx-proxy-secret*.conf
+neora-proxy-secret.conf
+
+# Logs and runtime output
+*.log
+npm-debug.log*
+
+# Local backups / scratch
+*.bak
+*.bak2
+*.bak-*
+*.eski
+*.save
+*.orig
+*.pre-docker
+*.zip
+*.tgz
+*.tar.gz
+
+# Editor / OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Build / coverage output
+coverage/
+dist/
+.vercel/

@@ -1,0 +1,12 @@
+{
+  "name": "neora-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Neora static site with a zero-dependency Node server and same-origin API proxy",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node serve.mjs",
+    "check": "node --check serve.mjs"
+  }
+}

@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Secrets and local environment files
+.env
+.env.*
+!.env.example
+
+# Logs and runtime output
+*.log
+npm-debug.log*
+
+# Editor / OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Coverage / build output
+coverage/
+dist/
+
+# Local backups
+*.bak
+*.bak2
+*.eski
+*.save
+*.pre-docker

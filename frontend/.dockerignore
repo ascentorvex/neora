@@ -1,0 +1,8 @@
+.git
+*.zip
+README.md
+api
+vercel.json
+serve.mjs
+package.json
+LICENSE
